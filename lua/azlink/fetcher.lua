@@ -7,10 +7,10 @@ function fetcher:Run( sendFull )
         self:DispatchCommands( commands )
     end ):Catch( function( error, status )
         if status == nil then
-            AzLink.Logger:Error( "A connection error occured: " .. error )
+            AzLink.Logger:Error( "Unable to connect to the website: " .. error )
         else
-            local errorMessage = ( error.message or error ) .. " (" .. status .. ")"
-            AzLink.Logger:Error( "An HTTP error occured: " .. errorMessage )
+            local errorStatus = error .. " (" .. status .. ")"
+            AzLink.Logger:Error( "An HTTP error occurred: " .. errorStatus )
         end
     end )
 end
@@ -22,7 +22,7 @@ function fetcher:DispatchCommands( data )
     for _, commandData in pairs( data.commands ) do
         local player = player.GetBySteamID64( commandData.uid )
         local playerName = player and player:Nick( ) or commandData.name
-        local steamId32 = player and player:SteamID() or commandData.steamid_32
+        local steamId32 = player and player:SteamID( ) or commandData.steamid_32
 
         for _, command in pairs( commandData.values ) do
             local display = playerName .. " (" .. commandData.uid .. ")"
@@ -32,6 +32,8 @@ function fetcher:DispatchCommands( data )
             AzLink.Logger:Info( "Dispatching command to " .. display .. ": " .. playerCommand )
             game.ConsoleCommand( playerCommand .. "\n" )
         end
+
+        total = total + 1
     end
 
     if total > 0 then

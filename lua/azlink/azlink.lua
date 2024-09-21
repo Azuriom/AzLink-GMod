@@ -1,4 +1,5 @@
-﻿AZLINK_VERSION = "0.1.0" -- TODO
+﻿AZLINK_VERSION = "1.0.0"
+
 AzLink = AzLink or { }
 AzLink.lastSent = 0
 AzLink.lastFullSent = 0
@@ -7,8 +8,13 @@ AzLink.config = { }
 function AzLink:Fetch( force )
     local siteKey = AzLink.config.site_key
     local baseUrl = AzLink.config.url
-    if siteKey == nil or baseUrl == nil or not force and RealTime( ) - AzLink.lastSent < 15 then return end
+
+    if siteKey == nil or baseUrl == nil then return nil end
+
+    if not force and RealTime( ) - AzLink.lastSent < 15 then return nil end
+
     local sendFull = os.date( "*t" ).min % 15 == 0 and RealTime( ) - AzLink.lastFullSent > 60
+
     AzLink.lastSent = RealTime( )
 
     if sendFull then
@@ -28,12 +34,12 @@ function AzLink:Ping( )
             AzLink.Logger:Error( "Unable to ping: " .. error )
         else
             local errorMessage = ( error.message or error ) .. " (" .. status .. ")"
-            AzLink.Logger:Error( "An HTTP error occured during ping: " .. errorMessage )
+            AzLink.Logger:Error( "An HTTP error occurred during ping: " .. errorMessage )
         end
     end )
 end
 
-function AzLink:GetServerData( full )
+function AzLink:GetServerData( fullData )
     local players = { }
 
     for _, player in ipairs( player.GetHumans( ) ) do
@@ -52,10 +58,10 @@ function AzLink:GetServerData( full )
         ["version"] = AZLINK_VERSION,
         ["players"] = players,
         ["maxPlayers"] = game.MaxPlayers( ),
-        ["full"] = full,
+        ["full"] = fullData,
     }
 
-    if not full then return baseData end
+    if not fullData then return baseData end
 
     baseData.worlds = {
         ["entities"] = ents.GetCount( ),

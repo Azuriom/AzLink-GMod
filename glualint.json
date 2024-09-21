@@ -1,10 +1,10 @@
 {
     "lint_unusedParameters": true,
     "lint_unusedLoopVars": true,
-    "lint_spaceAfterParens": true,
-    "lint_spaceAfterBraces": true,
+    "lint_spaceBetweenParens": true,
+    "lint_spaceBetweenBraces": true,
     "prettyprint_minimizeParens": true,
-    "prettyprint_spaceAfterParens": true,
-    "prettyprint_spaceAfterBraces": true,
+    "prettyprint_spaceBetweenParens": true,
+    "prettyprint_spaceBetweenBraces": true,
     "prettyprint_spaceAfterLabel": true
 }

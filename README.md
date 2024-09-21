@@ -17,3 +17,7 @@ This project follows the [CFC Glua Style Guidelines](https://github.com/CFC-Serv
 
 This addon uses [gmsv_serverstat](https://github.com/WilliamVenner/gmsv_serverstat) as an optional dependency to get
 process resources usages.
+
+## Timer
+
+AzLink scheduler is based on Garry's Mod [`timer`](https://wiki.facepunch.com/gmod/timer.Create), whose internals cause it not to advance while the client is timing out from the server or on an empty dedicated server due to hibernation, unless `sv_hibernate_think` is set to `1`.

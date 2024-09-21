@@ -11,25 +11,25 @@ end
 concommand.Add( "azlink", function( _, _, args )
     if args[2] == "setup" then
         if args[3] == nil or args[4] == nil then
-            AzLink.Logger:Error( "Mising URL and/or site key!" )
-
+            AzLink.Logger:Error( "You must first add this server in your Azuriom admin dashboard, in the 'Servers' section." )
             return
         end
 
-        -- TODO find a cleaner way to support column?
+        -- TODO find a cleaner way to support column
         setupAzLink( args[3]:gsub( "!", ":" ):gsub( "|", "/" ), args[4] )
 
         return
     end
 
     if args[2] == "status" then
-        local promise = AzLink:Ping( )
+        local result = AzLink:Ping( )
 
-        if promise == nil then
-            AzLink.Logger:Error( "No URL and/or site key configured yet!" )
+        if result == nil then
+            AzLink.Logger:Error( "AzLink is not configured yet, use the 'setup' subcommand first." )
+            return
         end
 
-        promise:Then( function( )
+        result:Then( function( )
             AzLink.Logger:Info( "Connected to the website successfully." )
         end )
 
@@ -37,12 +37,19 @@ concommand.Add( "azlink", function( _, _, args )
     end
 
     if args[2] == "fetch" then
-        AzLink:Fetch( true ):Then( function( )
+        local result = AzLink:Fetch( true )
+
+        if result == nil then
+            AzLink.Logger:Error( "AzLink is not configured yet, use the 'setup' subcommand first." )
+            return
+        end
+
+        result:Then( function( )
             AzLink.Logger:Info( "Data has been fetched successfully." )
         end )
 
         return
     end
 
-    AzLink.Logger:Info( "Uknown subcommand. Must be 'setup', 'status' or 'fetch'." )
+    AzLink.Logger:Info( "Unknown subcommand. Must be 'setup', 'status' or 'fetch'." )
 end )
