@@ -8,7 +8,12 @@
     end )
 end
 
-concommand.Add( "azlink", function( _, _, args )
+concommand.Add( "azlink", function( ply, _, args )
+    if IsValid( ply ) then
+        ply:SendLua( [[MsgC(Color(255,0,0),"[AzLink - ERROR] ",color_white,"This command must be executed from the server console.")]] )
+        return
+    end
+
     if args[2] == "setup" then
         if args[3] == nil or args[4] == nil then
             AzLink.Logger:Error( "You must first add this server in your Azuriom admin dashboard, in the 'Servers' section." )
