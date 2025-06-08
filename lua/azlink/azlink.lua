@@ -1,4 +1,4 @@
-﻿AZLINK_VERSION = "1.0.0"
+﻿AZLINK_VERSION = "1.0.1"
 
 AzLink = AzLink or { }
 AzLink.lastSent = 0
