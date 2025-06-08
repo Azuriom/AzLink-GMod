@@ -10,7 +10,7 @@ end
 
 concommand.Add( "azlink", function( ply, _, args )
     if IsValid( ply ) then
-        ply:SendLua( [[MsgC(Color(255,0,0),"[AzLink - ERROR] ",color_white,"This command must be executed from the server console.","\n")]] )
+        ply:PrintMessage( HUD_PRINTCONSOLE, "This command must be executed from the server console." )
         return
     end
 
