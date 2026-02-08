@@ -1,10 +1,10 @@
-﻿local httpClient = {
+local httpClient = {
     timeout = 5000
 }
 
-function httpClient:Request( requestMethod, endpoint, data )
-    return AzLink.Promise( function( onResolve, onReject )
-        HTTP( {
+function httpClient:Request(requestMethod, endpoint, data)
+    return AzLink.Promise(function(onResolve, onReject)
+        local request = CHTTP({
             method = requestMethod,
             url = AzLink.config.url .. "/api/azlink" .. endpoint,
             timeout = self.timeout,
@@ -13,22 +13,22 @@ function httpClient:Request( requestMethod, endpoint, data )
                 ["Accept"] = "application/json",
                 ["Content-Type"] = "application/json",
             },
-            type = "application/json",
-            body = data and util.TableToJSON( data ) or nil,
-            success = function( code, body )
-                local jsonBody = body and util.JSONToTable( body ) or body
+            body = data and util.TableToJSON(data) or nil,
+            success = function(code, body, headers)
+                local jsonBody = body and util.JSONToTable(body) or body
 
                 if code >= 300 then
-                    onReject( jsonBody.message or body, code )
-
+                    onReject(jsonBody.message or body, code)
                     return
                 end
 
-                onResolve( jsonBody )
+                onResolve(jsonBody)
             end,
-            failed = onReject,
-        } )
-    end )
+            failed = function(error)
+                onReject(error)
+            end,
+        })
+    end)
 end
 
 AzLink.HttpClient = httpClient
