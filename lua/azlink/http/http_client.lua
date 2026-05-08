@@ -1,12 +1,13 @@
 local httpClient = {
-    timeout = 5000
+    timeout = 10
 }
-local httpRequest
+local httpRequest = HTTP
 
-if pcall( require, "chttp" ) and CHTTP ~= nil then
-	httpRequest = CHTTP
+if util.IsBinaryModuleInstalled( "chttp" ) and pcall( require, "chttp" ) then
+    MsgN( "[AzLink] Using CHTTP for HTTP requests." )
 else
-	httpRequest = HTTP
+    MsgN( "[AzLink] CHTTP is not available; using the built-in HTTP module for HTTP requests. Consider" )
+    MsgN( "  installing CHTTP for better performance: https://github.com/timschumi/gmod-chttp#installation" )
 end
 
 function httpClient:Request( requestMethod, endpoint, data )
