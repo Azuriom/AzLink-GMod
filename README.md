@@ -15,8 +15,9 @@ This project follows the [CFC Glua Style Guidelines](https://github.com/CFC-Serv
 
 ## Dependencies
 
-This addon uses [gmsv_serverstat](https://github.com/WilliamVenner/gmsv_serverstat) as an optional dependency to get
-process resources usages.
+This addon uses two **optional** dependencies:
+* [serverstat](https://github.com/WilliamVenner/gmsv_serverstat) to get process resources usages
+* [CHTTP](https://github.com/timschumi/gmod-chttp) for improved HTTP requests by using cURL
 
 ## Timer
 
