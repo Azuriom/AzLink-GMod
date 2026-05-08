@@ -1,10 +1,18 @@
-﻿local httpClient = {
-    timeout = 5000
+local httpClient = {
+    timeout = 10
 }
+local httpRequest = HTTP
+
+if util.IsBinaryModuleInstalled( "chttp" ) and pcall( require, "chttp" ) then
+    MsgN( "[AzLink] Using CHTTP for HTTP requests." )
+else
+    MsgN( "[AzLink] CHTTP is not available; using the built-in HTTP module for HTTP requests. Consider" )
+    MsgN( "  installing CHTTP for better performance: https://github.com/timschumi/gmod-chttp#installation" )
+end
 
 function httpClient:Request( requestMethod, endpoint, data )
     return AzLink.Promise( function( onResolve, onReject )
-        HTTP( {
+        httpRequest( {
             method = requestMethod,
             url = AzLink.config.url .. "/api/azlink" .. endpoint,
             timeout = self.timeout,
