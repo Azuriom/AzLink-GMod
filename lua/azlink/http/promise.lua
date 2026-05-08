@@ -17,25 +17,23 @@ function Promise:new( resolver )
     local resolve = function( ... )
         if target.state ~= PENDING then return end
 
-        for _, callback in pairs( target.queue ) do
+        target.values = { ... }
+        target.state = RESOLVED
+
+        for _, callback in ipairs( target.queue ) do
             callback( ... )
         end
-
-        target.values = { ... }
-
-        target.state = RESOLVED
     end
 
     local reject = function( ... )
         if target.state ~= PENDING then return end
 
-        for _, callback in pairs( target.handlers ) do
+        target.values = { ... }
+        target.state = REJECTED
+
+        for _, callback in ipairs( target.handlers ) do
             callback( ... )
         end
-
-        target.values = { ... }
-
-        target.state = REJECTED
     end
 
     resolver( resolve, reject )
@@ -47,7 +45,7 @@ function Promise:Then( callback )
     if self.state == PENDING then
         table.insert( self.queue, callback )
     elseif self.state == RESOLVED then
-        callback( self.values )
+        callback( unpack(self.values) )
     end
 
     return self
@@ -56,8 +54,8 @@ end
 function Promise:Catch( callback )
     if self.state == PENDING then
         table.insert( self.handlers, callback )
-    elseif self.state == RESOLVED then
-        callback( self.values )
+    elseif self.state == REJECTED then
+        callback( unpack(self.values) )
     end
 
     return self

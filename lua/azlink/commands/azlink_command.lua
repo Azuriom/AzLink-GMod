@@ -20,7 +20,7 @@ concommand.Add( "azlink", function( ply, _, args )
             return
         end
 
-        -- TODO find a cleaner way to support column
+        -- TODO legacy command escaping, remove in a future version
         setupAzLink( args[3]:gsub( "!", ":" ):gsub( "|", "/" ), args[4] )
 
         return

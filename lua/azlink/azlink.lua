@@ -1,4 +1,4 @@
-﻿AZLINK_VERSION = "1.0.1"
+﻿AZLINK_VERSION = "1.1.0"
 
 AzLink = AzLink or { }
 AzLink.lastSent = 0
@@ -29,7 +29,7 @@ function AzLink:Ping( )
     local baseUrl = AzLink.config.url
     if siteKey == nil or baseUrl == nil then return nil end
 
-    return AzLink.HttpClient:Request( "GET", "", data ):Catch( function( error, status )
+    return AzLink.HttpClient:Request( "GET", "", nil ):Catch( function( error, status )
         if status == nil then
             AzLink.Logger:Error( "Unable to ping: " .. error )
         else
@@ -42,10 +42,10 @@ end
 function AzLink:GetServerData( fullData )
     local players = { }
 
-    for _, player in ipairs( player.GetHumans( ) ) do
+    for _, localPlayer in ipairs( player.GetHumans( ) ) do
         table.insert( players, {
-            ["name"] = player:Nick( ),
-            ["uid"] = player:SteamID64( ),
+            ["name"] = localPlayer:Nick( ),
+            ["uid"] = localPlayer:SteamID64( ),
         } )
     end
 
@@ -87,8 +87,6 @@ hook.Add( "Initialize", "azlink-init", function( )
     timer.Create( "azlink-fetcher-task", 60, 0, function( )
         AzLink:Fetch( )
     end )
-
-    timer.Start( "azlink-fetcher-task" )
 end )
 
 file.CreateDir( "azlink" )
@@ -98,9 +96,9 @@ if rawConfig ~= nil then
     AzLink.config = util.JSONToTable( rawConfig )
 end
 
-if #file.Find( "lua/bin/gmsv_serverstat*", "GAME" ) == 0 or not pcall( require, "serverstat" ) then
-    MsgN( "[AzLink] Unable to load serverstat, please install the module by following" )
-    MsgN( "these instructions: https://github.com/WilliamVenner/gmsv_serverstat#installation" )
+if not util.IsBinaryModuleInstalled( "serverstat" ) or not pcall( require, "serverstat" ) then
+    MsgN( "[AzLink] serverstat is not available, server statistics will be unavailable. Consider" )
+    MsgN( "  installing it to enable server statistics: https://github.com/WilliamVenner/gmsv_serverstat#installation" )
 end
 
 MsgN( "[AzLink] AzLink successfully enabled." )
